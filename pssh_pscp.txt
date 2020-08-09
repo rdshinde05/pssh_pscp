@@ -1,0 +1,122 @@
+PSSH tool includes parallel versions of OpenSSH and related tools such as:
+
+pssh – is a program for running ssh in parallel on a multiple remote hosts.
+pscp – is a program for copying files in parallel to a number of hosts.
+Pscp – Copy/Transfer Files Two or More Remote Linux Servers
+prsync – is a program for efficiently copying files to multiple hosts in parallel.
+pnuke – kills processes on multiple remote hosts in parallel.
+pslurp – copies files from multiple remote hosts to a central host in parallel.
+
+
+# yum install python-pip
+# dnf install python-pip
+# pip install pssh  
+
+
+When using pssh you need to create a host file with the number of hosts along with IP address and port number that you need to connect to remote systems using pssh.
+
+The lines in the host file are in the following form and can also include blank lines and comments.
+
+pssh hosts file
+192.168.0.10:22
+192.168.0.11:22
+Executing single command on multiple server using pssh
+You can execute any single command on different or multiple Linux hosts on a network by running a pssh command. There are many options to use with pssh as described below:
+
+We shall look at a few ways of executing commands on a number of hosts using pssh with different options.
+
+To read hosts file, include the -h host_file-name or –hosts host_file_name option.
+To include a default username on all hosts that do not define a specific user, use the -l username or –user username option.
+You can also display standard output and standard error as each host completes. By using the -i or –inline option.
+You may wish to make connections time out after the given number of seconds by including the -t number_of_seconds option.
+To save standard output to a given directory, you can use the -o /directory/path option.
+To ask for a password and send to ssh, use the -A option.
+Let’s see few examples and usage of pssh commands:
+
+1. To execute echo “Hello TecMint” on the terminal of the multiple Linux hosts by root user and prompt for the root user’s password, run this command below.
+
+Important: Remember all the hosts must be included in the host file.
+
+# pssh -h pssh-hosts -l root -A echo "Hello TecMint"
+
+Warning: do not enter your password if anyone else has superuser
+privileges or access to your account.
+Password: 
+[1] 15:54:55 [SUCCESS] 192.168.0.10:22
+[2] 15:54:56 [SUCCESS] 192.168.0.11:22
+Note: In the above command “pssh-hosts” is a file with list of remote Linux servers IP address and SSH port number that you wish to execute commands.
+
+2. To find out the disk space usage on multiple Linux servers on your network, you can run a single command as follows.
+
+# pssh -h pssh-hosts -l root -A -i "df -hT"
+
+Warning: do not enter your password if anyone else has superuser
+privileges or access to your account.
+Password: 
+[1] 16:04:18 [SUCCESS] 192.168.0.10:22
+Filesystem     Type   Size  Used Avail Use% Mounted on
+/dev/sda3      ext4    38G  4.3G   32G  12% /
+tmpfs          tmpfs  499M     0  499M   0% /dev/shm
+/dev/sda1      ext4   190M   25M  156M  14% /boot
+
+[2] 16:04:18 [SUCCESS] 192.168.0.11:22
+Filesystem              Type      Size  Used Avail Use% Mounted on
+/dev/mapper/centos-root xfs        30G  9.8G   20G  34% /
+devtmpfs                devtmpfs  488M     0  488M   0% /dev
+tmpfs                   tmpfs     497M  148K  497M   1% /dev/shm
+tmpfs                   tmpfs     497M  7.0M  490M   2% /run
+tmpfs                   tmpfs     497M     0  497M   0% /sys/fs/cgroup
+/dev/sda1               xfs       497M  166M  332M  34% /boot
+3. If you wish to know the uptime of multiple Linux servers at one go, then you can run the following command.
+
+# pssh -h pssh-hosts -l root -A -i "uptime"
+Warning: do not enter your password if anyone else has superuser
+privileges or access to your account.
+Password: 
+[1] 16:09:03 [SUCCESS] 192.168.0.10:22
+ 16:09:01 up  1:00,  2 users,  load average: 0.07, 0.02, 0.00
+
+[2] 16:09:03 [SUCCESS] 192.168.0.11:22
+ 06:39:03 up  1:00,  2 users,  load average: 0.00, 0.06, 0.09
+You can view the manual entry page for the pssh command to get many other options to find out more ways of using pssh.
+
+# pssh --help
+
+
+Pscp – Transfer/Copy Files to Multiple Linux Servers Using Single Shell
+
+Copy Files to Multiple Linux Servers
+Let’s create a new file called “myscphosts.txt” and add the list of Linux hosts IP address and SSH port (default 22) number as shown.
+
+192.168.0.3:22
+192.168.0.9:22
+Once you’ve added hosts to the file, it’s time to copy files from local machine to multiple Linux hosts under /tmp directory with the help of following command.
+
+# pscp -h myscphosts.txt -l tecmint -Av wine-1.7.55.tar.bz2 /tmp/
+OR
+# pscp.pssh -h myscphosts.txt -l tecmint -Av wine-1.7.55.tar.bz2 /tmp/
+Sample Output
+Warning: do not enter your password if anyone else has superuser
+privileges or access to your account.
+Password: 
+[1] 17:48:25 [SUCCESS] 192.168.0.3:22
+[2] 17:48:35 [SUCCESS] 192.168.0.9:22
+Explanation about the options used in the above command.
+
+-h switch used to read a hosts from a given file and location.
+-l switch reads a default username on all hosts that do not define a specific user.
+-A switch tells pscp ask for a password and send to ssh.
+-v switch is used to run pscp in verbose mode.
+Copy Directories to Multiple Linux Servers
+If you want to copy entire directory use -r option, which will recursively copy entire directories as shown.
+
+# pscp -h myscphosts.txt -l tecmint -Av -r Android\ Games/ /tmp/
+OR
+# pscp.pssh -h myscphosts.txt -l tecmint -Av -r Android\ Games/ /tmp/
+Sample Output
+Warning: do not enter your password if anyone else has superuser
+privileges or access to your account.
+Password: 
+[1] 17:48:25 [SUCCESS] 192.168.0.3:22
+[2] 17:48:35 [SUCCESS] 192.168.0.9:22
+You can view the manual entry page for the pscp or use pscp --help command to seek for help.
